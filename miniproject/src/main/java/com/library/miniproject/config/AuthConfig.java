@@ -3,9 +3,8 @@ package com.library.miniproject.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import com.library.miniproject.entities.*;
-import com.library.miniproject.repository.*;
+import com.library.miniproject.repositories.*;
 import jakarta.annotation.PostConstruct;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,7 +40,7 @@ public class AuthConfig {
 
     private void initAdminUser() {
         Role adminRole = roleRepo.existsByName("Administrator");
-        if (userRepo.findByUsername("admin") == null) {
+        if (userRepo.existsUsername("admin") == null) {
             User adminUser = new User();
             adminUser.setUsername("admin");
             adminUser.setPassword("admin");

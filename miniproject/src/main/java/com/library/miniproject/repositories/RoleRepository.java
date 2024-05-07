@@ -1,4 +1,4 @@
-package com.library.miniproject.repository;
+package com.library.miniproject.repositories;
 
 import java.util.UUID;
 import org.springframework.data.jpa.repository.*;
