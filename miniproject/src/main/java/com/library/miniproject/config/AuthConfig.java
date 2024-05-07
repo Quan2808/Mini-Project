@@ -1,43 +1,37 @@
 package com.library.miniproject.config;
 
-import java.util.HashSet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import com.library.miniproject.entities.*;
 import com.library.miniproject.repository.*;
 import jakarta.annotation.PostConstruct;
-import java.util.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 public class AuthConfig {
 
     @Autowired
-    UserRepository userRepo;
+    private UserRepository userRepo;
 
     @Autowired
-    RoleRepository roleRepo;
+    private RoleRepository roleRepo;
 
-    String[] roleNames = { "Administrator", "Publisher", "Reader" };
+    private final String[] roleNames = { "Administrator", "Publisher", "Reader" };
 
     @PostConstruct
-    public void createDefaultRoles() {
+    public void init() {
+        initRoles();
+        initAdminUser();
+    }
 
-        for (Role role : roleRepo.findAll()) {
-            boolean existsInRoleNames = false;
-            for (String roleName : roleNames) {
-                if (role.getName().equals(roleName)) {
-                    existsInRoleNames = true;
-                    break;
-                }
-            }
-            if (!existsInRoleNames) {
-                roleRepo.delete(role);
-            }
-        }
+    private void initRoles() {
+        Set<String> existingRoles = new HashSet<>();
+        roleRepo.findAll().forEach(role -> existingRoles.add(role.getName()));
 
         for (String roleName : roleNames) {
-            if (roleRepo.existsByName(roleName) == null) {
+            if (!existingRoles.contains(roleName)) {
                 Role role = new Role();
                 role.setName(roleName);
                 roleRepo.save(role);
@@ -45,21 +39,16 @@ public class AuthConfig {
         }
     }
 
-    @PostConstruct
-    public void createDefaultAdminUser() {
+    private void initAdminUser() {
         Role adminRole = roleRepo.existsByName("Administrator");
-
         if (userRepo.findByUsername("admin") == null) {
             User adminUser = new User();
             adminUser.setUsername("admin");
             adminUser.setPassword("admin");
-
             Set<Role> roles = new HashSet<>();
             roles.add(adminRole);
             adminUser.setRoles(roles);
-
             userRepo.save(adminUser);
         }
     }
-
 }
