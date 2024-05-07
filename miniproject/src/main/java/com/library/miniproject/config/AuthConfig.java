@@ -47,6 +47,8 @@ public class AuthConfig {
             Set<Role> roles = new HashSet<>();
             roles.add(adminRole);
             adminUser.setRoles(roles);
+            adminUser.setZipCode("admin");
+            adminUser.setNumberphone("admin");
             userRepo.save(adminUser);
         }
     }

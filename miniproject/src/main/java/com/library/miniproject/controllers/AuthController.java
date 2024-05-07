@@ -18,18 +18,32 @@ public class AuthController {
     @Autowired
     private AuthService userService;
 
-    @PostMapping("/register")
+    @GetMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody User user) {
+        return userService.loginUser(user);
+    }
+
+    @GetMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         return userService.registerUser(user);
     }
 
-    @PutMapping("/{username}/changepassword")
+    @GetMapping("/{username}/changepassword")
     public ResponseEntity<String> changePassword(@PathVariable String username,
             @RequestBody Map<String, String> passwords) {
         String oldPassword = passwords.get("oldPassword");
         String newPassword = passwords.get("newPassword");
 
         return userService.changePassword(username, oldPassword, newPassword);
+    }
+
+    @GetMapping("/{username}/resetpassword")
+    public ResponseEntity<String> resetPassword(@PathVariable String username,
+            @RequestBody Map<String, String> resetInfo) {
+        String zipCode = resetInfo.get("zipCode");
+        String numberphone = resetInfo.get("numberphone");
+
+        return userService.resetPassword(username, zipCode, numberphone);
     }
 
     @ControllerAdvice
