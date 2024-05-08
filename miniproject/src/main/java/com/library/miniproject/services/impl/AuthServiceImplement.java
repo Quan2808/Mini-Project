@@ -28,7 +28,7 @@ public class AuthServiceImplement implements AuthService {
         }
 
         UUID a = getUserId(user.getUsername());
-        return ResponseEntity.ok("Login successfully. " + a);
+        return ResponseEntity.ok("Login successfully. " + roleRepo.checkUserRole(logUser.getUsername()));
 
     }
 

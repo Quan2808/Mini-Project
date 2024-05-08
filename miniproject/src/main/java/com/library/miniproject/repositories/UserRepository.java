@@ -1,8 +1,8 @@
 package com.library.miniproject.repositories;
 
-import java.util.UUID;
+import java.util.*;
 import org.springframework.data.jpa.repository.*;
-import com.library.miniproject.entities.User;
+import com.library.miniproject.entities.*;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
