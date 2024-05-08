@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.library.miniproject.services.AuthService;
 import com.library.miniproject.entities.*;
 import com.library.miniproject.repositories.*;
+import com.library.miniproject.utils.ResponseUtils;
 
 @Service
 public class AuthServiceImplement implements AuthService {
@@ -23,49 +24,45 @@ public class AuthServiceImplement implements AuthService {
         User logUser = userRepo.login(user.getUsername(), user.getPassword());
 
         if (logUser == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid account.");
+            return ResponseUtils.badRequest("Invalid account.");
         }
-
-        UUID a = getUserId(user.getUsername());
-        return ResponseEntity.ok("Login successfully. " + roleRepo.checkUserRole(logUser.getUsername()));
-
+        // roleRepo.checkUserRole(logUser.getUsername())
+        return ResponseUtils.ok("Login successfully.");
     }
 
     @Override
     public ResponseEntity<String> registerUser(User user) {
-        if (user.getUsername() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Username do not empty.");
+        List<String> emptyFields = new ArrayList<>();
+
+        if (ResponseUtils.isEmpty(user.getUsername())) {
+            emptyFields.add("Username");
         }
 
-        if (user.getPassword() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Password do not empty.");
+        if (ResponseUtils.isEmpty(user.getPassword())) {
+            emptyFields.add("Password");
         }
 
-        if (user.getZipCode() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Zip code do not empty.");
+        if (ResponseUtils.isEmpty(user.getZipCode())) {
+            emptyFields.add("Zip code");
         }
 
-        if (user.getNumberphone() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Number do not empty.");
+        if (ResponseUtils.isEmpty(user.getNumberphone())) {
+            emptyFields.add("Phone number");
         }
 
-        if (userRepo.existsUsername(user.getUsername()) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Username \"" + user.getUsername() + "\" already exists.");
+        if (!emptyFields.isEmpty()) {
+            return ResponseUtils.badRequest("Fields cannot be empty: " + String.join(", ", emptyFields));
         }
+
+        if (userRepo.existsUsername(user.getUsername()) != null)
+            return ResponseUtils.badRequest("Username \"" + user.getUsername() + "\" already exists.");
 
         Role readerRole = roleRepo.existsByName("Reader");
         Set<Role> roles = new HashSet<>();
         roles.add(readerRole);
         user.setRoles(roles);
         userRepo.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body("User registered successfully!");
+        return ResponseUtils.ok("User registered successfully!");
     }
 
     @Override
@@ -73,18 +70,17 @@ public class AuthServiceImplement implements AuthService {
         User user = userRepo.existsUsername(username);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Username \"" + username + "\" not found.");
+            return ResponseUtils.badRequest("Username \"" + username + "\" not found.");
         }
 
         if (!user.getPassword().equals(oldPassword)) {
-            return ResponseEntity.badRequest().body("Old password is incorrect");
+            return ResponseUtils.badRequest("Old password is incorrect");
         }
 
         user.setPassword(newPassword);
         userRepo.save(user);
 
-        return ResponseEntity.ok("Password updated successfully");
+        return ResponseUtils.ok("Password updated successfully");
     }
 
     @Override
@@ -92,14 +88,13 @@ public class AuthServiceImplement implements AuthService {
         User user = userRepo.existsAccount(username, zipCode, numberphone);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Zip code or Phone number is invalid.");
+            return ResponseUtils.badRequest("Zip code or Phone number is invalid.");
         }
 
         user.setPassword("1");
         userRepo.save(user);
 
-        return ResponseEntity.ok("Password reset successfully!");
+        return ResponseUtils.ok("Password reset successfully!");
     }
 
     public UUID getUserId(String username) {
