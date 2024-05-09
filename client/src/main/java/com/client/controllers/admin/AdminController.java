@@ -49,10 +49,10 @@ public class AdminController {
             return redirect;
         }
 
-        ResponseEntity<List<Object[]>> userListResponse = restTemplate.exchange(userUrl + "/listuser", HttpMethod.GET,
+        ResponseEntity<List<Object[]>> response = restTemplate.exchange(userUrl + "/listuser", HttpMethod.GET,
                 null, new ParameterizedTypeReference<List<Object[]>>() {
                 });
-        List<Object[]> userList = userListResponse.getBody();
+        List<Object[]> userList = response.getBody();
 
         model.addAttribute("userList", userList);
 

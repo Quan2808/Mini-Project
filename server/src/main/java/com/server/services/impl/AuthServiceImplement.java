@@ -34,7 +34,7 @@ public class AuthServiceImplement implements AuthService {
             return ResponseUtils.ok("Login successfully.");
         }
 
-        return ResponseUtils.badRequest("You dont have access.");
+        return ResponseUtils.badRequest("You don't have permission.");
     }
 
     @Override

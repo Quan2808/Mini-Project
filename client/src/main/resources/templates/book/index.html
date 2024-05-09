@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List Book</title>
+  </head>
+  <body>
+    <h1>Account list</h1>
+    <a th:href="@{/}">Return Index</a>
+    <a th:href="@{/book/newbook}">Create new</a>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Publish Date</th>
+          <th>Author</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="i : ${bookList}">
+          <td th:text="${i[0]}"></td>
+          <td th:text="${i[3]}"></td>
+          <td th:text="${i[4]}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
