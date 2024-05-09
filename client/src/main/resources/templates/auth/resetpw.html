@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password</title>
+  </head>
+  <body>
+    <h2>Reset Password</h2>
+    <form method="post" th:action="@{/auth/resetpw}">
+      <div>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+      </div>
+      <div>
+        <label for="zipCode">Zip Code:</label>
+        <input type="text" id="zipCode" name="zipCode" required />
+      </div>
+      <div>
+        <label for="numberphone">Phone Number:</label>
+        <input type="text" id="numberphone" name="numberphone" required />
+      </div>
+      <button type="submit">Reset Password</button>
+    </form>
+  </body>
+</html>

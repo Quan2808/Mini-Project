@@ -7,16 +7,18 @@
   </head>
   <body>
     <h1>Welcome to Book Library</h1>
-    <h3 th:if="${showLogoutLink}">
+    <h3 th:if="${loggedIn}">
       <span>
         Welcome, <span th:text="${username}"></span>!
         <a th:href="@{/auth/logout}">Logout</a>
       </span>
+      <a th:href="@{'/auth/changepw/' + ${username}}">Change password</a>
     </h3>
-    <h3 th:if="${showLoginLink}">
+    <h3 th:unless="${loggedIn}">
       <span>
-      Do you want to <span><a th:href="@{/auth}">Login</a></span
-      >?
-    </span>
+        Do you want to <span><a th:href="@{/auth}">Login</a></span
+        >?
+      </span>
+    </h3>
   </body>
 </html>

@@ -1,5 +1,8 @@
 package com.client.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -103,6 +106,75 @@ public class AuthController {
         }
 
         return "auth/adminlogin";
+    }
+
+    @GetMapping("/changepw/{username}")
+    public String getChangePw(@PathVariable String username, Model model) {
+        model.addAttribute("username", username);
+        return "auth/changepw";
+    }
+
+    @PostMapping("/changepw")
+    public String postChangePw(@RequestParam String username, @RequestParam String oldPassword,
+            @RequestParam String newPassword, Model model) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> passwords = new HashMap<>();
+            passwords.put("oldPassword", oldPassword);
+            passwords.put("newPassword", newPassword);
+
+            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(passwords, headers);
+            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + username + "/changepassword",
+                    requestEntity, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return "redirect:/";
+            }
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
+
+            if (e.getStatusCode() != HttpStatus.OK) {
+                model.addAttribute("error", errorMessage);
+            }
+        }
+
+        return "auth/changepw";
+    }
+
+    @GetMapping("/resetpw")
+    public String getResetPw(Model model) {
+        model.addAttribute("resetInfo", new User());
+        return "auth/resetpw";
+    }
+
+    @PostMapping("/resetpw")
+    public String postResetPw(@ModelAttribute("resetInfo") User resetInfo, Model model) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> resetData = new HashMap<>();
+            resetData.put("zipCode", resetInfo.getZipCode());
+            resetData.put("numberphone", resetInfo.getNumberphone());
+
+            HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(resetData, headers);
+            ResponseEntity<String> response = restTemplate
+                    .postForEntity(baseUrl + resetInfo.getUsername() + "/resetpassword", requestEntity, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return "redirect:/auth";
+            }
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
+
+            if (e.getStatusCode() != HttpStatus.OK) {
+                model.addAttribute("error", errorMessage);
+            }
+        }
+
+        return "auth/resetpw";
     }
 
 }

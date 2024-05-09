@@ -13,12 +13,10 @@ public class HomeController {
     @GetMapping()
     public String Index(Model model, HttpSession session) {
         if (session.getAttribute("loggedIn") != null) {
-            model.addAttribute("showLoginLink", false);
-            model.addAttribute("showLogoutLink", true);
+            model.addAttribute("loggedIn", true);
             model.addAttribute("username", session.getAttribute("username"));
         } else {
-            model.addAttribute("showLoginLink", true);
-            model.addAttribute("showLogoutLink", false);
+            model.addAttribute("loggedIn", false);
         }
 
         return "index";
