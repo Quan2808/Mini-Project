@@ -4,6 +4,8 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.server.services.AuthService;
 import com.server.entities.*;
 import com.server.repositories.*;
@@ -17,6 +19,24 @@ public class AuthServiceImplement implements AuthService {
 
     @Autowired
     private RoleRepository roleRepo;
+
+    @Override
+    public ResponseEntity<List<Object[]>> listUser() {
+        List<Object[]> userList = userRepo.getUsers();
+        return ResponseEntity.ok().body(userList);
+    }
+
+    @Override
+    public ResponseEntity<String> loginAdminUser(User user) {
+        User logUser = userRepo.login(user.getUsername(), user.getPassword());
+        String getAdminRole = roleRepo.checkUserRole(logUser.getUsername());
+
+        if (logUser != null && getAdminRole.equals("Administrator")) {
+            return ResponseUtils.ok("Login successfully.");
+        }
+
+        return ResponseUtils.badRequest("You dont have access.");
+    }
 
     @Override
     public ResponseEntity<String> loginUser(User user) {

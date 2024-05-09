@@ -1,10 +1,16 @@
 package com.server.services;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 
 import com.server.entities.User;
 
 public interface AuthService {
+
+    ResponseEntity<List<Object[]>> listUser();
+
+    ResponseEntity<String> loginAdminUser(User user);
 
     ResponseEntity<String> loginUser(User user);
 

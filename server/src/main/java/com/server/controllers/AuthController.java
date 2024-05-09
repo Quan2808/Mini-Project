@@ -1,6 +1,6 @@
 package com.server.controllers;
 
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -17,6 +17,16 @@ public class AuthController {
 
     @Autowired
     private AuthService userService;
+
+    @GetMapping("/listuser")
+    public ResponseEntity<List<Object[]>> listUser() {
+        return userService.listUser();
+    }
+
+    @PostMapping("/adminlogin")
+    public ResponseEntity<String> loginAdminUser(@RequestBody User user) {
+        return userService.loginAdminUser(user);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody User user) {

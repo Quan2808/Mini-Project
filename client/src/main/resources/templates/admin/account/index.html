@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account List</title>
+  </head>
+  <body>
+    <h1>Account list</h1>
+    <a th:href="@{/admin}">Return Dashboard</a>
+    <table>
+      <thead th:border="1">
+        <tr>
+          <th>User name</th>
+          <th>Phone number</th>
+          <th>Zip code</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="user : ${userList}">
+          <td th:text="${user[0]}"></td>
+          <td th:text="${user[1]}"></td>
+          <td th:text="${user[2]}"></td>
+          <td th:text="${user[3]}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
