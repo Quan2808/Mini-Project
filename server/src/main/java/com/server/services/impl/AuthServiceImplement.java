@@ -4,7 +4,6 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.server.services.AuthService;
 import com.server.entities.*;
@@ -74,8 +73,13 @@ public class AuthServiceImplement implements AuthService {
             return ResponseUtils.badRequest("Fields cannot be empty: " + String.join(", ", emptyFields));
         }
 
-        if (userRepo.existsUsername(user.getUsername()) != null)
+        if (userRepo.existsUsername(user.getUsername()) != null) {
             return ResponseUtils.badRequest("Username \"" + user.getUsername() + "\" already exists.");
+        }
+
+        if (userRepo.existsPhoneNumber(user.getNumberphone()) != null) {
+            return ResponseUtils.badRequest("Phone number \"" + user.getNumberphone() + "\" already exists.");
+        }
 
         Role readerRole = roleRepo.existsByName("Reader");
         Set<Role> roles = new HashSet<>();
