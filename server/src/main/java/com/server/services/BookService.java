@@ -2,8 +2,6 @@ package com.server.services;
 
 import java.util.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.core.io.Resource;
 import com.server.entities.Book;
 
 public interface BookService {
