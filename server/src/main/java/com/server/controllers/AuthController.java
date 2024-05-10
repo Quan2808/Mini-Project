@@ -38,6 +38,11 @@ public class AuthController {
         return userService.registerUser(user, roleName);
     }
 
+    @PostMapping("/checkpublisher/{username}")
+    public ResponseEntity<String> checkPublisher(@PathVariable String username) {
+        return userService.checkPublisher(username);
+    }
+
     @PostMapping("/{username}/changepassword")
     public ResponseEntity<String> changePassword(@PathVariable String username,
             @RequestBody Map<String, String> passwords) {

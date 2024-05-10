@@ -13,6 +13,10 @@
         <a th:href="@{/auth/logout}">Logout</a>
       </span>
       <a th:href="@{'/auth/changepw/' + ${username}}">Change password</a>
+
+      <span th:if="${publisher}">
+        <a th:href="@{/book/newbook}">Create new</a>
+      </span>
     </h3>
     <h3 th:unless="${loggedIn}">
       <span>

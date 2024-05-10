@@ -121,6 +121,16 @@ public class AuthServiceImplement implements AuthService {
         return ResponseUtils.ok("Password reset successfully!");
     }
 
+    @Override
+    public ResponseEntity<String> checkPublisher(String username) {
+        String roleName = roleRepo.checkUserRole(username);
+
+        if (roleName.equals("Publisher"))
+            return ResponseUtils.ok("Publisher");
+
+        return ResponseUtils.badRequest("Not Publisher");
+    }
+
     public UUID getUserId(String username) {
         User user = userRepo.existsUsername(username);
         if (user != null) {

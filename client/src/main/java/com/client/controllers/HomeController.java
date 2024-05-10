@@ -15,6 +15,11 @@ public class HomeController {
         if (session.getAttribute("loggedIn") != null) {
             model.addAttribute("loggedIn", true);
             model.addAttribute("username", session.getAttribute("username"));
+
+            if (session.getAttribute("publisher") != null) {
+                model.addAttribute("publisher", true);
+            }
+
         } else {
             model.addAttribute("loggedIn", false);
         }

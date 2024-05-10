@@ -33,8 +33,10 @@ public class AuthController {
             ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/login", user, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
+
                 session.setAttribute("loggedIn", true);
                 session.setAttribute("username", user.getUsername());
+
                 return "redirect:/";
             }
         } catch (HttpClientErrorException e) {
@@ -179,4 +181,38 @@ public class AuthController {
         return "auth/resetpw";
     }
 
+    @GetMapping("/publisherlogin")
+    public String getPublisherLogin(Model model) {
+        model.addAttribute("user", new User());
+        return "publisher/auth/login";
+    }
+
+    @PostMapping("/publisherlogin")
+    public String postPublisherLogin(@ModelAttribute("user") User user, Model model, HttpSession session) {
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/login", user, String.class);
+            ResponseEntity<String> checkRole = restTemplate.postForEntity(
+                    baseUrl + "/checkpublisher/" + user.getUsername(),
+                    user, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+
+                session.setAttribute("publisherLoggedIn", true);
+                if (checkRole.getStatusCode() == HttpStatus.OK) {
+                    session.setAttribute("username", user.getUsername());
+                    return "redirect:/publisher";
+                }
+
+                return "redirect:/";
+            }
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
+
+            if (e.getStatusCode() != HttpStatus.OK) {
+                model.addAttribute("error", errorMessage);
+            }
+        }
+
+        return "auth/login";
+    }
 }
