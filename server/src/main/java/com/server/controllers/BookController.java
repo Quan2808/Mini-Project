@@ -18,9 +18,14 @@ public class BookController {
     @Autowired
     BookService bookService;
 
-    @GetMapping("getBooks")
+    @GetMapping()
     public ResponseEntity<List<Object[]>> getBooks() {
         return bookService.listBook();
+    }
+
+    @GetMapping("/search/{title}")
+    public ResponseEntity<List<Object[]>> getBooksByTitle(@PathVariable String title) {
+        return bookService.listBookByTitle(title);
     }
 
     @DeleteMapping("/{bookId}")
@@ -31,7 +36,7 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<Object> getBook(@PathVariable UUID bookId) {
+    public ResponseEntity<Object[]> getBook(@PathVariable UUID bookId) {
         return bookService.getBook(bookId);
     }
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Detail</title>
+  </head>
+  <body>
+    <h1>Book Details</h1>
+    <table th:border="1">
+      <tr>
+        <th>Title</th>
+        <td th:text="${book[0][1]}">Book Title</td>
+      </tr>
+      <tr>
+        <th>Description</th>
+        <td th:text="${book[0][2]}">Book Description</td>
+      </tr>
+      <tr>
+        <th>Upload Path</th>
+        <td th:text="${book[0][3]}">Book Upload Path</td>
+      </tr>
+      <tr>
+        <th>Publish Date</th>
+        <td th:text="${book[0][4]}">Publish Date</td>
+      </tr>
+      <tr>
+        <th>Author</th>
+        <td th:text="${book[0][5]}">Author Name</td>
+      </tr>
+    </table>
+
+    <!-- Add any additional sections or elements here -->
+
+    <a th:href="@{/book}">Back to Book List</a>
+  </body>
+</html>

@@ -7,21 +7,34 @@
   </head>
   <body>
     <h1>Account list</h1>
+
     <a th:href="@{/}">Return Index</a>
+
     <a th:href="@{/book/newbook}">Create new</a>
-    <table>
+
+    <form th:action="@{/book/search}" method="get">
+      <label for="title">Title:</label>
+      <input type="text" id="title" th:name="title" />
+      <button type="submit">Search</button>
+    </form>
+
+    <table th:border="1">
       <thead>
         <tr>
           <th>Title</th>
           <th>Publish Date</th>
           <th>Author</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <tr th:each="i : ${bookList}">
-          <td th:text="${i[0]}"></td>
-          <td th:text="${i[3]}"></td>
+          <td th:text="${i[1]}"></td>
           <td th:text="${i[4]}"></td>
+          <td th:text="${i[5]}"></td>
+          <td>
+            <a th:href="@{/book/{bookId}(bookId=${i[0]})}">Detail</a>
+          </td>
         </tr>
       </tbody>
     </table>

@@ -24,6 +24,12 @@ public class BookServiceImplement implements BookService {
     RoleRepository roleRepo;
 
     @Override
+    public ResponseEntity<List<Object[]>> listBookByTitle(String k) {
+        List<Object[]> books = bookRepo.getBooksByTitle(k);
+        return ResponseEntity.ok().body(books);
+    }
+
+    @Override
     public ResponseEntity<String> deleteBook(Book b, String username) {
         String userRole = roleRepo.checkUserRole(username);
         if (userRole.equals("Reader") || !b.getUser().getUsername().equals(username)) {
@@ -54,13 +60,12 @@ public class BookServiceImplement implements BookService {
     }
 
     @Override
-    public ResponseEntity<Object> getBook(UUID bookId) {
-        Optional<Book> bookOptional = bookRepo.findById(bookId);
-        if (bookOptional.isPresent()) {
-            Book book = bookOptional.get();
-            return ResponseEntity.ok().body(book);
+    public ResponseEntity<Object[]> getBook(UUID bookId) {
+        Object[] bookDetails = bookRepo.getBook(bookId);
+        if (bookDetails != null) {
+            return ResponseEntity.ok().body(bookDetails);
         } else {
-            return ResponseEntity.badRequest().body("Book not found.");
+            return ResponseEntity.notFound().build();
         }
     }
 
