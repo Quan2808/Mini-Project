@@ -1,6 +1,8 @@
 package com.client.controllers;
 
 import java.io.*;
+import java.nio.file.*;
+import java.time.LocalDate;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.*;
@@ -13,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.client.dto.BookDto;
+import com.client.entities.Book;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -22,8 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/book")
 public class BookController {
 
-    @Value("${book.upload-dir}")
-    private String uploadDir;
+    @Value("${upload.path}")
+    private String bookPath;
 
     private final String baseUrl = "http://localhost:6789/api/books";
 
@@ -63,39 +66,55 @@ public class BookController {
     }
 
     @PostMapping
-    public String saveBook(@ModelAttribute BookDto bookDto, @RequestParam String username) throws IOException {
-        String url = baseUrl + "?username=" + username;
+    public String saveBook(@ModelAttribute BookDto bookDto, HttpSession session) {
 
-        // File file = new File(uploadDir + "/" +
-        // bookDto.getBookUploadPath().getOriginalFilename());
-        // try (InputStream inputStream = bookDto.getBookUploadPath().getInputStream())
-        // {
-        // try (FileOutputStream outputStream = new FileOutputStream(file)) {
-        // StreamUtils.copy(inputStream, outputStream);
-        // }
-        // }
+        String username = (String) session.getAttribute("username");
+        if (username == null) {
+            return "redirect:/login";
+        }
 
-        MultipartFile multipartFile = bookDto.getBookUploadPath();
-        String fileName = multipartFile.getOriginalFilename();
+        MultipartFile file = bookDto.getBookUploadPath();
+        String fileName = file.getOriginalFilename();
 
-        FileCopyUtils.copy(bookDto.getBookUploadPath().getBytes(),
-                new File(uploadDir, fileName));
+        Path uploadPath = Paths.get(bookPath);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("title", bookDto.getTitle());
-        body.add("description", bookDto.getDescription());
-        body.add("publishDate", new Date());
-        body.add("username", username);
-        body.add("bookUploadPath", fileName);
+        try {
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            try (InputStream inputStream = file.getInputStream()) {
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "redirect:/error";
+        }
+
+        Book newBook = new Book();
+        newBook.setTitle(bookDto.getTitle());
+        newBook.setDescription(bookDto.getDescription());
+        newBook.setBookUploadPath(fileName);
+        newBook.setPublishDate(LocalDate.now());
+        newBook.setUser(bookDto.getUser());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<Book> requestEntity = new HttpEntity<>(newBook, headers);
 
-        restTemplate.postForObject(url, requestEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                baseUrl + "?username=" + username,
+                HttpMethod.POST,
+                requestEntity,
+                String.class);
 
-        return "redirect:/book";
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return "redirect:/book";
+        } else {
+            return "redirect:/error";
+        }
     }
 
 }

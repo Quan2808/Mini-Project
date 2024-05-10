@@ -43,8 +43,9 @@ public class BookServiceImplement implements BookService {
     @Override
     public ResponseEntity<String> saveBook(Book b, String username) {
         String getRole = roleRepo.checkUserRole(username);
-
+        User user = userRepo.existsUsername(username);
         if (!getRole.equals("Reader")) {
+            b.setUser(user);
             bookRepo.save(b);
             return ResponseUtils.ok("Create successfully.");
         }
