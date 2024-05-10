@@ -4,7 +4,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.*;
-
+import org.springframework.core.io.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -143,6 +143,22 @@ public class BookController {
             return "redirect:/book";
         } else {
             return "redirect:/error";
+        }
+    }
+
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) throws IOException {
+        Path uploadPath = Paths.get(bookPath);
+        Path filePath = uploadPath.resolve(fileName);
+
+        Resource resource = new UrlResource(filePath.toUri());
+        if (resource.exists() && resource.isReadable()) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

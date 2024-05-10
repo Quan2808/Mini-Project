@@ -17,10 +17,6 @@
         <td th:text="${book[0][2]}">Book Description</td>
       </tr>
       <tr>
-        <th>Upload Path</th>
-        <td th:text="${book[0][3]}">Book Upload Path</td>
-      </tr>
-      <tr>
         <th>Publish Date</th>
         <td th:text="${book[0][4]}">Publish Date</td>
       </tr>
@@ -28,9 +24,17 @@
         <th>Author</th>
         <td th:text="${book[0][5]}">Author Name</td>
       </tr>
+      <tr>
+        <th>Download Book</th>
+        <td>
+          <a
+            th:href="@{/book/download/{fileName}(fileName=${book[0][3]})}"
+            th:if="${book[0][3] != null}"
+            >Download</a
+          >
+        </td>
+      </tr>
     </table>
-
-    <!-- Add any additional sections or elements here -->
 
     <a th:href="@{/book}">Back to Book List</a>
   </body>
