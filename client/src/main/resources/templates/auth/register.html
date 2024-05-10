@@ -48,6 +48,13 @@
         />
       </div>
       <div>
+        <label for="roleName">Role:</label>
+        <select id="roleName" name="roleName" required>
+          <option value="Publisher">Publisher</option>
+          <option value="Reader">Reader</option>
+        </select>
+      </div>
+      <div>
         <button type="submit">Login</button>
       </div>
       <p th:text="${error}" style="color: red"></p>

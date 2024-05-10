@@ -14,7 +14,7 @@ public interface AuthService {
 
     ResponseEntity<String> loginUser(User user);
 
-    ResponseEntity<String> registerUser(User user);
+    ResponseEntity<String> registerUser(User user, String roleName);
 
     ResponseEntity<String> changePassword(String username, String oldPassword, String newPassword);
 

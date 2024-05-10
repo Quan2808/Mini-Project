@@ -50,7 +50,7 @@ public class AuthServiceImplement implements AuthService {
     }
 
     @Override
-    public ResponseEntity<String> registerUser(User user) {
+    public ResponseEntity<String> registerUser(User user, String roleName) {
         List<String> emptyFields = new ArrayList<>();
 
         if (ResponseUtils.isEmpty(user.getUsername())) {
@@ -81,9 +81,9 @@ public class AuthServiceImplement implements AuthService {
             return ResponseUtils.badRequest("Phone number \"" + user.getNumberphone() + "\" already exists.");
         }
 
-        Role readerRole = roleRepo.existsByName("Reader");
+        Role setRole = roleRepo.existsByName(roleName);
         Set<Role> roles = new HashSet<>();
-        roles.add(readerRole);
+        roles.add(setRole);
         user.setRoles(roles);
         userRepo.save(user);
         return ResponseUtils.ok("User registered successfully!");

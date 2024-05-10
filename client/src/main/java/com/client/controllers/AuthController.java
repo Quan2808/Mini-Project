@@ -55,9 +55,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String postRegister(@ModelAttribute("user") User user, Model model) {
+    public String postRegister(@ModelAttribute("user") User user, @RequestParam("roleName") String roleName,
+            Model model) {
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/register", user, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/register?roleName=" + roleName,
+                    user, String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 return "redirect:/";
