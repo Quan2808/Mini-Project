@@ -4,8 +4,7 @@ import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,9 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping()
 public class HomeController {
 
-    private final String baseUrl = "http://localhost:6789/api/books";
+    private final String bookUrl = "http://localhost:6789/api/books";
+
+    private final String ratingUrl = "http://localhost:6789/api/ratings";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -45,7 +46,7 @@ public class HomeController {
         handleUserSession(model, session);
 
         ResponseEntity<List<Object[]>> response = restTemplate.exchange(
-                baseUrl,
+                bookUrl,
                 HttpMethod.GET,
                 null, new ParameterizedTypeReference<List<Object[]>>() {
                 });
@@ -63,14 +64,14 @@ public class HomeController {
         ResponseEntity<List<Object[]>> response;
         if (title != null && !title.isEmpty()) {
             response = restTemplate.exchange(
-                    baseUrl + "/search/" + title,
+                    bookUrl + "/search/" + title,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<List<Object[]>>() {
                     });
         } else {
             response = restTemplate.exchange(
-                    baseUrl,
+                    bookUrl,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<List<Object[]>>() {
@@ -84,8 +85,10 @@ public class HomeController {
 
     @GetMapping("/{bookId}")
     public String getBook(@PathVariable UUID bookId, Model model, HttpSession session) {
+        handleUserSession(model, session);
+
         ResponseEntity<Object[]> response = restTemplate.exchange(
-                baseUrl + "/" + bookId,
+                bookUrl + "/" + bookId,
                 HttpMethod.GET,
                 null,
                 Object[].class);

@@ -41,6 +41,23 @@
       </tr>
     </table>
 
+    <form
+      th:action="@{/book/rate/{bookId}/{username}(bookId=${bookId}, username=${username})}"
+      method="post"
+    >
+      <input type="hidden" name="bookId" th:value="${bookId}" />
+      <input type="hidden" name="username" th:value="${username}" />
+      <label for="value">Rating:</label>
+      <select id="value" name="value">
+        <option value="1">1 Star</option>
+        <option value="2">2 Stars</option>
+        <option value="3">3 Stars</option>
+        <option value="4">4 Stars</option>
+        <option value="5">5 Stars</option>
+      </select>
+      <button type="submit">Submit Rating</button>
+    </form>
+
     <a th:href="@{/}">Back to Book List</a>
   </body>
 </html>

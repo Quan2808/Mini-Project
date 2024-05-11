@@ -1,19 +1,17 @@
 package com.server.entities;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 import java.util.*;
 import org.hibernate.annotations.GenericGenerator;
 import lombok.*;
 
 @Entity
-@Table(name = "books")
+@Table(name = "ratings")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Book {
+public class Rating {
 
     @Id
     @GeneratedValue(generator = "uuid-hibernate-generator")
@@ -21,20 +19,13 @@ public class Book {
     private UUID id;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    private String bookUploadPath;
-
-    @Column(nullable = false)
-    private LocalDate publishDate;
+    private int value;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "book")
-    private Set<Rating> ratings;
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
 }
