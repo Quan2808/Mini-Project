@@ -45,7 +45,6 @@ public class AuthServiceImplement implements AuthService {
         if (logUser == null) {
             return ResponseUtils.badRequest("Invalid account.");
         }
-        // roleRepo.checkUserRole(logUser.getUsername())
         return ResponseUtils.ok("Login successfully.");
     }
 
@@ -122,13 +121,16 @@ public class AuthServiceImplement implements AuthService {
     }
 
     @Override
-    public ResponseEntity<String> checkPublisher(String username) {
-        String roleName = roleRepo.checkUserRole(username);
+    public ResponseEntity<String> checkPublisher(User user) {
+        User logUser = userRepo.login(user.getUsername(), user.getPassword());
+        String getAdminRole = roleRepo.checkUserRole(logUser.getUsername());
 
-        if (roleName.equals("Publisher"))
-            return ResponseUtils.ok("Publisher");
+        if (logUser != null && getAdminRole.equals("Publisher")) {
+            return ResponseUtils.ok("Login successfully.");
+        }
 
-        return ResponseUtils.badRequest("Not Publisher");
+        return ResponseUtils.badRequest("You don't have permission.");
+
     }
 
     public UUID getUserId(String username) {

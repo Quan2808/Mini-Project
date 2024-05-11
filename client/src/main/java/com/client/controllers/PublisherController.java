@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/publisher")
 public class PublisherController {
+
     @Autowired
     private RestTemplate restTemplate;
 

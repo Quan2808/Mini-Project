@@ -20,6 +20,6 @@ public interface AuthService {
 
     ResponseEntity<String> resetPassword(String username, String zipCode, String numberphone);
 
-    ResponseEntity<String> checkPublisher(String name);
+    ResponseEntity<String> checkPublisher(User user);
 
 }
