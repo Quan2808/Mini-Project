@@ -30,6 +30,27 @@
       </span>
     </h3>
 
-    <a th:href="@{/book}">Book list</a>
+    <!-- <a th:href="@{/book}">Book list</a> -->
+
+    <table th:border="1">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Publish Date</th>
+          <th>Author</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="i : ${bookList}">
+          <td th:text="${i[1]}"></td>
+          <td th:text="${i[4]}"></td>
+          <td th:text="${i[5]}"></td>
+          <td>
+            <a th:href="@{/book/{bookId}(bookId=${i[0]})}">Detail</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </body>
 </html>

@@ -29,33 +29,35 @@ public class AuthController {
 
     @PostMapping("/login")
     public String postLogin(@ModelAttribute("user") User user, Model model, HttpSession session) {
-        ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/login", user, String.class);
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/login", user, String.class);
 
-        ResponseEntity<String> roleResponse = restTemplate.postForEntity(baseUrl + "/role", user, String.class);
+            ResponseEntity<String> roleResponse = restTemplate.postForEntity(baseUrl + "/role", user, String.class);
 
-        if (response.getStatusCode() == HttpStatus.OK) {
+            if (response.getStatusCode() == HttpStatus.OK) {
+                String role = roleResponse.getBody();
 
-            String role = roleResponse.getBody();
+                if ("Administrator".equals(role)) {
+                    session.setAttribute("Administrator", true);
+                } else if ("Publisher".equals(role)) {
+                    session.setAttribute("Publisher", true);
+                }
 
-            if ("Administrator".equals(role)) {
-                session.setAttribute("Administrator", true);
-            } else if ("Publisher".equals(role)) {
-                session.setAttribute("Publisher", true);
+                session.setAttribute("loggedIn", true);
+                session.setAttribute("username", user.getUsername());
+
+                return "redirect:/";
             }
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
 
-            session.setAttribute("loggedIn", true);
-            session.setAttribute("username", user.getUsername());
-
-            return "redirect:/";
-        }
-
-        if (response.getStatusCode() != HttpStatus.OK) {
-            String error = response.getBody();
-            model.addAttribute("error", error);
+            if (e.getStatusCode() != HttpStatus.OK) {
+                model.addAttribute("error", errorMessage);
+                return "auth/login";
+            }
         }
 
         return "auth/login";
-
     }
 
     @GetMapping("/register")
