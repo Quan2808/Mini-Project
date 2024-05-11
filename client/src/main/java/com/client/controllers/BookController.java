@@ -1,7 +1,6 @@
 package com.client.controllers;
 
 import java.io.*;
-import java.nio.file.*;
 import java.time.LocalDate;
 import java.util.*;
 import org.springframework.core.io.*;
@@ -15,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.client.dto.BookDto;
 import com.client.entities.Book;
+import com.client.untils.FileUtil;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -103,19 +103,10 @@ public class BookController {
         }
 
         MultipartFile file = bookDto.getBookUploadPath();
-        String fileName = file.getOriginalFilename();
-
-        Path uploadPath = Paths.get(bookPath);
+        String fileName = "";
 
         try {
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            try (InputStream inputStream = file.getInputStream()) {
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-            }
+            fileName = FileUtil.saveFile(file, bookPath);
         } catch (IOException e) {
             e.printStackTrace();
             return "redirect:/error";
@@ -147,17 +138,16 @@ public class BookController {
     }
 
     @GetMapping("/download/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) throws IOException {
-        Path uploadPath = Paths.get(bookPath);
-        Path filePath = uploadPath.resolve(fileName);
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+        try {
+            Resource resource = FileUtil.getFileAsResource(fileName, bookPath);
 
-        Resource resource = new UrlResource(filePath.toUri());
-        if (resource.exists() && resource.isReadable()) {
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                     .body(resource);
-        } else {
+        } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.notFound().build();
         }
     }
