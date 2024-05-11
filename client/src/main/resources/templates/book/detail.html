@@ -45,23 +45,25 @@
       </tr>
     </table>
 
-    <form
-      th:action="@{/book/rate/{bookId}/{username}(bookId=${bookId}, username=${username})}"
-      method="post"
-    >
-      <input type="hidden" name="bookId" th:value="${bookId}" />
-      <input type="hidden" name="username" th:value="${username}" />
-      <label for="value">Rating:</label>
-      <select id="value" name="value">
-        <option
-          th:each="i : ${#numbers.sequence(5,1)}"
-          th:value="${i}"
-          th:text="${i + ' Star'}"
-        ></option>
-      </select>
+    <div th:if="${ratingForm}">
+      <form
+        th:action="@{/book/rate/{bookId}/{username}(bookId=${bookId}, username=${username})}"
+        method="post"
+      >
+        <input type="hidden" name="bookId" th:value="${bookId}" />
+        <input type="hidden" name="username" th:value="${username}" />
+        <label for="value">Rating:</label>
+        <select id="value" name="value">
+          <option
+            th:each="i : ${#numbers.sequence(5,1)}"
+            th:value="${i}"
+            th:text="${i + ' Star'}"
+          ></option>
+        </select>
 
-      <button type="submit">Submit Rating</button>
-    </form>
+        <button type="submit">Submit Rating</button>
+      </form>
+    </div>
 
     <a th:href="@{/}">Back to Book List</a>
   </body>

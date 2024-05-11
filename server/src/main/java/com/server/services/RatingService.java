@@ -11,4 +11,6 @@ public interface RatingService {
 
     ResponseEntity<String> saveRating(UUID bookId, String username, Rating r);
 
+    ResponseEntity<String> existRating(UUID bookId, String username);
+
 }

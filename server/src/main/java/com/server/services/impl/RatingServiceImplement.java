@@ -41,6 +41,15 @@ public class RatingServiceImplement implements RatingService {
         return ResponseUtils.ok("Rating successfully.");
     }
 
+    @Override
+    public ResponseEntity<String> existRating(UUID bookId, String username) {
+        Object[] rating = ratingRepo.getRating(bookId, getUserId(username));
+        if (rating.length >= 1) {
+            return ResponseUtils.badRequest("Can not rating.");
+        }
+        return ResponseUtils.ok("Can rating");
+    }
+
     public UUID getUserId(String username) {
         User user = userRepo.existsUsername(username);
         if (user != null) {

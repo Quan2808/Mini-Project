@@ -8,6 +8,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.http.HttpSession;
@@ -86,14 +87,27 @@ public class HomeController {
     @GetMapping("/{bookId}")
     public String getBook(@PathVariable UUID bookId, Model model, HttpSession session) {
         handleUserSession(model, session);
-
         ResponseEntity<Object[]> response = restTemplate.exchange(
-                bookUrl + "/" + bookId,
-                HttpMethod.GET,
-                null,
-                Object[].class);
+                bookUrl + "/" + bookId, HttpMethod.GET, null, Object[].class);
 
         Object[] book = response.getBody();
+        String userId = (String) session.getAttribute("username");
+
+        try {
+            ResponseEntity<String> existRatingResponse = restTemplate.getForEntity(
+                    ratingUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
+
+            if (existRatingResponse.getStatusCode() == HttpStatus.OK) {
+                String responseBody = existRatingResponse.getBody();
+                if (responseBody != null && responseBody.equals("Can rating")) {
+                    model.addAttribute("ratingForm", true);
+                }
+            } else if (existRatingResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                model.addAttribute("ratingForm", false);
+            }
+        } catch (HttpClientErrorException e) {
+            model.addAttribute("errorMessage", "An error occurred while processing your request.");
+        }
 
         if (response.getStatusCode().is2xxSuccessful() && book.length > 0 && book != null) {
             if (session.getAttribute("loggedIn") != null) {
@@ -101,10 +115,7 @@ public class HomeController {
             }
 
             ResponseEntity<List<Object[]>> ratingsResponse = restTemplate.exchange(
-                    ratingUrl + "/" + bookId,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<Object[]>>() {
+                    ratingUrl + "/" + bookId, HttpMethod.GET, null, new ParameterizedTypeReference<List<Object[]>>() {
                     });
 
             if (ratingsResponse.getStatusCode().is2xxSuccessful()) {
