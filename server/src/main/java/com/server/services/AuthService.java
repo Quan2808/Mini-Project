@@ -22,4 +22,6 @@ public interface AuthService {
 
     ResponseEntity<String> checkPublisher(User user);
 
+    ResponseEntity<String> checkUserRole(User user);
+
 }

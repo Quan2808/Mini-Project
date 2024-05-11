@@ -22,7 +22,7 @@ public class PublisherController {
     private RestTemplate restTemplate;
 
     private boolean isAdminLoggedIn(HttpSession session) {
-        return session.getAttribute("publisherLoggedIn") != null;
+        return session.getAttribute("Publisher") != null;
     }
 
     private String authenticate(HttpSession session, String redirect) {

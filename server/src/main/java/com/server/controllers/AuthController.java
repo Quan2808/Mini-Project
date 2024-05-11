@@ -33,6 +33,11 @@ public class AuthController {
         return userService.loginUser(user);
     }
 
+    @PostMapping("/role")
+    public ResponseEntity<String> checkUserROle(@RequestBody User user) {
+        return userService.checkUserRole(user);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user, String roleName) {
         return userService.registerUser(user, roleName);

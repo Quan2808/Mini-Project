@@ -49,6 +49,14 @@ public class AuthServiceImplement implements AuthService {
     }
 
     @Override
+    public ResponseEntity<String> checkUserRole(User user) {
+        User logUser = userRepo.login(user.getUsername(), user.getPassword());
+        String getAdminRole = roleRepo.checkUserRole(logUser.getUsername());
+
+        return ResponseUtils.ok(getAdminRole);
+    }
+
+    @Override
     public ResponseEntity<String> registerUser(User user, String roleName) {
         List<String> emptyFields = new ArrayList<>();
 

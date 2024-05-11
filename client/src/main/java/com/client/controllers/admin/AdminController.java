@@ -23,7 +23,7 @@ public class AdminController {
     private RestTemplate restTemplate;
 
     private boolean isAdminLoggedIn(HttpSession session) {
-        return session.getAttribute("adminLoggedIn") != null;
+        return session.getAttribute("Administrator") != null;
     }
 
     private String authenticate(HttpSession session, String redirect) {
