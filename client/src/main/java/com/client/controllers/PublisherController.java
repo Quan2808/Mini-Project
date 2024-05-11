@@ -21,12 +21,12 @@ public class PublisherController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private boolean isAdminLoggedIn(HttpSession session) {
+    private boolean isLoggedIn(HttpSession session) {
         return session.getAttribute("Publisher") != null;
     }
 
     private String authenticate(HttpSession session, String redirect) {
-        if (!isAdminLoggedIn(session)) {
+        if (!isLoggedIn(session)) {
             return "redirect:" + redirect;
         }
         return null;
@@ -34,7 +34,7 @@ public class PublisherController {
 
     @GetMapping()
     public String index(Model model, HttpSession session) {
-        String redirect = authenticate(session, "/auth/publisherlogin");
+        String redirect = authenticate(session, "/");
         if (redirect != null) {
             return redirect;
         }

@@ -35,7 +35,7 @@ public class AdminController {
 
     @GetMapping()
     public String index(Model model, HttpSession session) {
-        String redirect = authenticate(session, "/auth/adminlogin");
+        String redirect = authenticate(session, "/");
         if (redirect != null) {
             return redirect;
         }
@@ -44,7 +44,7 @@ public class AdminController {
 
     @GetMapping("/account")
     public String getAccounts(Model model, HttpSession session) {
-        String redirect = authenticate(session, "/auth/adminlogin");
+        String redirect = authenticate(session, "/");
         if (redirect != null) {
             return redirect;
         }

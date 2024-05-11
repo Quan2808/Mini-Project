@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jms.JmsProperties.Listener.Session;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -94,14 +95,14 @@ public class AuthController {
     }
 
     @GetMapping("/changepw/{username}")
-    public String getChangePw(@PathVariable String username, Model model) {
-        model.addAttribute("username", username);
+    public String getChangePw(@PathVariable String username, Model model, HttpSession session) {
+        model.addAttribute("username", session.getAttribute("username"));
         return "auth/changepw";
     }
 
     @PostMapping("/changepw")
     public String postChangePw(@RequestParam String username, @RequestParam String oldPassword,
-            @RequestParam String newPassword, Model model) {
+            @RequestParam String newPassword, Model model, HttpSession session) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -124,7 +125,7 @@ public class AuthController {
                 model.addAttribute("error", errorMessage);
             }
         }
-
+        model.addAttribute("username", session.getAttribute("username"));
         return "auth/changepw";
     }
 
