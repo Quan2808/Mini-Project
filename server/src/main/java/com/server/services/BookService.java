@@ -10,6 +10,8 @@ public interface BookService {
 
     ResponseEntity<List<Object[]>> listBookByTitle(String k);
 
+    ResponseEntity<List<Object[]>> listBookByByPublisher(UUID userId);
+
     ResponseEntity<String> saveBook(Book b, String username);
 
     ResponseEntity<String> deleteBook(Book b, String username);

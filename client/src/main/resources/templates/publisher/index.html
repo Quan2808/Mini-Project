@@ -7,7 +7,32 @@
   </head>
   <body>
     <div>
-      <a th:href="@{/auth/logout}">Logout</a>
+      <p><a th:href="@{/auth/logout}">Logout</a></p>
+
+      <p><a th:href="@{/book/newbook}">New Book</a></p>
+
+      <h1>Your Book</h1>
+
+      <table th:border="1">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Publish Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="i : ${bookList}">
+            <td th:text="${i[1]}"></td>
+            <td th:text="${i[4]}"></td>
+            <td>
+              <a th:href="@{/book/{bookId}(bookId=${i[0]})}" target="_blank"
+                >Detail</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </body>
 </html>

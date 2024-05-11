@@ -196,7 +196,7 @@ public class AuthController {
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 session.setAttribute("publisherLoggedIn", true);
-                // session.setAttribute("username", user.getUsername());
+                session.setAttribute("username", user.getUsername());
                 return "redirect:/publisher";
 
             }
