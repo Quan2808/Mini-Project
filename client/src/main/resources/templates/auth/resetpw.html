@@ -21,6 +21,7 @@
         <input type="text" id="numberphone" name="numberphone" required />
       </div>
       <button type="submit">Reset Password</button>
+      <p th:if="${error}" style="color: red" th:text="${error}"></p>
     </form>
   </body>
 </html>
