@@ -83,35 +83,6 @@ public class AuthController {
         return "redirect:/";
     }
 
-    @GetMapping("/adminlogin")
-    public String getAdminLogin(Model model) {
-        model.addAttribute("user", new User());
-        return "admin/auth/login";
-    }
-
-    @PostMapping("/adminlogin")
-    public String postAdminLogin(@ModelAttribute("user") User user, Model model, HttpSession session) {
-
-        try {
-            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/adminlogin", user, String.class);
-
-            if (response.getStatusCode() == HttpStatus.OK) {
-                session.setAttribute("adminLoggedIn", true);
-                // session.setAttribute("username", user.getUsername());
-                return "redirect:/admin";
-
-            }
-        } catch (HttpClientErrorException e) {
-            String errorMessage = e.getResponseBodyAsString();
-
-            if (e.getStatusCode() != HttpStatus.OK) {
-                model.addAttribute("error", errorMessage);
-            }
-        }
-
-        return "auth/adminlogin";
-    }
-
     @GetMapping("/changepw/{username}")
     public String getChangePw(@PathVariable String username, Model model) {
         model.addAttribute("username", username);
@@ -181,6 +152,35 @@ public class AuthController {
         return "auth/resetpw";
     }
 
+    @GetMapping("/adminlogin")
+    public String getAdminLogin(Model model) {
+        model.addAttribute("user", new User());
+        return "admin/auth/login";
+    }
+
+    @PostMapping("/adminlogin")
+    public String postAdminLogin(@ModelAttribute("user") User user, Model model, HttpSession session) {
+
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/adminlogin", user, String.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                session.setAttribute("adminLoggedIn", true);
+                // session.setAttribute("username", user.getUsername());
+                return "redirect:/admin";
+
+            }
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
+
+            if (e.getStatusCode() != HttpStatus.OK) {
+                model.addAttribute("error", errorMessage);
+            }
+        }
+
+        return "auth/adminlogin";
+    }
+
     @GetMapping("/publisherlogin")
     public String getPublisherLogin(Model model) {
         model.addAttribute("user", new User());
@@ -189,21 +189,16 @@ public class AuthController {
 
     @PostMapping("/publisherlogin")
     public String postPublisherLogin(@ModelAttribute("user") User user, Model model, HttpSession session) {
+
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/login", user, String.class);
-            ResponseEntity<String> checkRole = restTemplate.postForEntity(
-                    baseUrl + "/checkpublisher/" + user.getUsername(),
-                    user, String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(baseUrl + "/checkpublisher", user,
+                    String.class);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-
                 session.setAttribute("publisherLoggedIn", true);
-                if (checkRole.getStatusCode() == HttpStatus.OK) {
-                    session.setAttribute("username", user.getUsername());
-                    return "redirect:/publisher";
-                }
+                // session.setAttribute("username", user.getUsername());
+                return "redirect:/publisher";
 
-                return "redirect:/";
             }
         } catch (HttpClientErrorException e) {
             String errorMessage = e.getResponseBodyAsString();

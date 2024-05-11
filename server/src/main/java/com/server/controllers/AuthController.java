@@ -38,9 +38,9 @@ public class AuthController {
         return userService.registerUser(user, roleName);
     }
 
-    @PostMapping("/checkpublisher/{username}")
-    public ResponseEntity<String> checkPublisher(@PathVariable String username) {
-        return userService.checkPublisher(username);
+    @PostMapping("/checkpublisher")
+    public ResponseEntity<String> checkPublisher(@RequestBody User user) {
+        return userService.checkPublisher(user);
     }
 
     @PostMapping("/{username}/changepassword")
