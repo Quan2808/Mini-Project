@@ -22,8 +22,7 @@ public class HomeController {
     @Autowired
     private RestTemplate restTemplate;
 
-    @GetMapping()
-    public String Index(Model model, HttpSession session) {
+    private void handleUserSession(Model model, HttpSession session) {
         if (session.getAttribute("loggedIn") != null) {
             model.addAttribute("loggedIn", true);
             model.addAttribute("username", session.getAttribute("username"));
@@ -39,6 +38,11 @@ public class HomeController {
         } else {
             model.addAttribute("loggedIn", false);
         }
+    }
+
+    @GetMapping()
+    public String Index(Model model, HttpSession session) {
+        handleUserSession(model, session);
 
         ResponseEntity<List<Object[]>> response = restTemplate.exchange(
                 baseUrl,
@@ -53,7 +57,9 @@ public class HomeController {
     }
 
     @GetMapping("/search")
-    public String getBooksByTitle(@RequestParam("title") String title, Model model) {
+    public String getBooksByTitle(@RequestParam("title") String title, Model model, HttpSession session) {
+        handleUserSession(model, session);
+
         ResponseEntity<List<Object[]>> response;
         if (title != null && !title.isEmpty()) {
             response = restTemplate.exchange(
@@ -73,7 +79,7 @@ public class HomeController {
 
         List<Object[]> books = response.getBody();
         model.addAttribute("bookList", books);
-        return "book/index";
+        return "index";
     }
 
     @GetMapping("/{bookId}")
