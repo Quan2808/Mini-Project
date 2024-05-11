@@ -83,7 +83,7 @@ public class HomeController {
     }
 
     @GetMapping("/{bookId}")
-    public String getBook(@PathVariable UUID bookId, Model model) {
+    public String getBook(@PathVariable UUID bookId, Model model, HttpSession session) {
         ResponseEntity<Object[]> response = restTemplate.exchange(
                 baseUrl + "/" + bookId,
                 HttpMethod.GET,
@@ -93,6 +93,9 @@ public class HomeController {
         Object[] book = response.getBody();
 
         if (response.getStatusCode().is2xxSuccessful() && book.length > 0 && book != null) {
+            if (session.getAttribute("loggedIn") != null) {
+                model.addAttribute("loggedIn", true);
+            }
             model.addAttribute("book", book);
             return "book/detail";
         } else {

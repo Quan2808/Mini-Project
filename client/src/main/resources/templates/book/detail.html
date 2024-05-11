@@ -27,11 +27,16 @@
       <tr>
         <th>Download Book</th>
         <td>
-          <a
-            th:href="@{/book/download/{fileName}(fileName=${book[0][3]})}"
-            th:if="${book[0][3] != null}"
-            >Download</a
-          >
+          <span th:if="${loggedIn}">
+            <a
+              th:href="@{/book/download/{fileName}(fileName=${book[0][3]})}"
+              th:if="${book[0][3] != null}"
+              >Download</a
+            >
+          </span>
+          <span th:unless="${loggedIn}">
+            <a th:href="@{/auth}">Login</a> to download
+          </span>
         </td>
       </tr>
     </table>

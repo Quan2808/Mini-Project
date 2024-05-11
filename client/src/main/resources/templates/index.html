@@ -24,10 +24,9 @@
     </h3>
 
     <h3 th:unless="${loggedIn}">
-      <span>
-        Do you want to <span><a th:href="@{/auth}">Login</a></span
-        >?
-      </span>
+      Do you want to
+      <span><a th:href="@{/auth}">Login</a></span
+      >?
     </h3>
 
     <form th:action="@{/search}" method="get">
