@@ -25,9 +25,9 @@ public class RatingServiceImplement implements RatingService {
     UserRepository userRepo;
 
     @Override
-    public ResponseEntity<List<Object[]>> listRating(UUID id) {
-        List<Object[]> result = ratingRepo.getRatingsByBook(id);
-        return ResponseEntity.ok().body(result);
+    public ResponseEntity<List<Object[]>> listRating(UUID bookId) {
+        List<Object[]> ratings = ratingRepo.getRatings(bookId);
+        return ResponseEntity.ok().body(ratings);
     }
 
     @Override

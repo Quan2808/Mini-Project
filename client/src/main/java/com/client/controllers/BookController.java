@@ -106,33 +106,6 @@ public class BookController {
         }
     }
 
-    // @PostMapping("/rating")
-    // public String saveRating(UUID bookId, String username, Rating rating,
-    // HttpSession session) {
-    // String getUsername = (String) session.getAttribute("username");
-
-    // String url = ratingUrl + "/saveRating/" + bookId + "/" + getUsername;
-
-    // HttpHeaders headers = new HttpHeaders();
-    // headers.setContentType(MediaType.APPLICATION_JSON);
-
-    // HttpEntity<Rating> requestEntity = new HttpEntity<>(rating, headers);
-
-    // RestTemplate restTemplate = new RestTemplate();
-    // ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST,
-    // requestEntity, String.class);
-
-    // return "redirect:/book";
-    // }
-
-    // @PostMapping("/saveRating/{bookId}/{username}")
-    // public String saveRating(@PathVariable UUID bookId, @PathVariable String
-    // username, @RequestBody Rating rating) {
-    // restTemplate.postForEntity(ratingUrl + "/saveRating/" + bookId + "/" +
-    // username, rating, String.class);
-    // return "redirect:/book";
-    // }
-
     @PostMapping("/rate/{bookId}/{username}")
     public String saveRating(@PathVariable UUID bookId, @PathVariable String username,
             @ModelAttribute("rating") Rating rating, HttpSession session) {

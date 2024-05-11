@@ -2,6 +2,7 @@ package com.server.services;
 
 import java.util.*;
 import org.springframework.http.ResponseEntity;
+
 import com.server.entities.Rating;
 
 public interface RatingService {

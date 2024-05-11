@@ -39,6 +39,10 @@
           </span>
         </td>
       </tr>
+      <tr>
+        <th>Rating</th>
+        <td th:text="${averageRating}"></td>
+      </tr>
     </table>
 
     <form
@@ -49,12 +53,13 @@
       <input type="hidden" name="username" th:value="${username}" />
       <label for="value">Rating:</label>
       <select id="value" name="value">
-        <option value="1">1 Star</option>
-        <option value="2">2 Stars</option>
-        <option value="3">3 Stars</option>
-        <option value="4">4 Stars</option>
-        <option value="5">5 Stars</option>
+        <option
+          th:each="i : ${#numbers.sequence(5,1)}"
+          th:value="${i}"
+          th:text="${i + ' Star'}"
+        ></option>
       </select>
+
       <button type="submit">Submit Rating</button>
     </form>
 

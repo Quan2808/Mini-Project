@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import com.server.entities.*;
+import com.server.repositories.RatingRepository;
 import com.server.services.RatingService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,9 @@ public class RatingController {
 
     @Autowired
     RatingService ratingService;
+
+    @Autowired
+    RatingRepository ratingRepo;
 
     @GetMapping("/{bookId}")
     public ResponseEntity<List<Object[]>> getRatings(@PathVariable UUID bookId) {

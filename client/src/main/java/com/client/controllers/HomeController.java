@@ -99,6 +99,21 @@ public class HomeController {
             if (session.getAttribute("loggedIn") != null) {
                 model.addAttribute("loggedIn", true);
             }
+
+            ResponseEntity<List<Object[]>> ratingsResponse = restTemplate.exchange(
+                    ratingUrl + "/" + bookId,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<Object[]>>() {
+                    });
+
+            if (ratingsResponse.getStatusCode().is2xxSuccessful()) {
+                List<Object[]> ratings = ratingsResponse.getBody();
+                double resultAverageRating = calculateAverageRating(ratings);
+                String averageRating = String.format("%.1f", resultAverageRating);
+                model.addAttribute("averageRating", averageRating);
+            }
+
             model.addAttribute("book", book);
             return "book/detail";
         } else {
@@ -106,4 +121,21 @@ public class HomeController {
         }
     }
 
+    private double calculateAverageRating(List<Object[]> ratings) {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
+
+        int totalRatings = 0;
+        int sumOfRatings = 0;
+
+        for (Object[] rating : ratings) {
+            int ratingValue = (int) rating[0];
+
+            sumOfRatings += ratingValue;
+            totalRatings++;
+        }
+
+        return totalRatings > 0 ? (double) sumOfRatings / totalRatings : 0.0;
+    }
 }
