@@ -68,4 +68,11 @@ public class BookServiceImplement implements BookService {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @Override
+    public ResponseEntity<List<Object[]>> listBookByByPublisher(UUID userId) {
+        List<Object[]> books = bookRepo.getBooksByPublisher(userId);
+        return ResponseEntity.ok().body(books);
+    }
+
 }
