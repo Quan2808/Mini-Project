@@ -94,16 +94,18 @@ public class HomeController {
         String userId = (String) session.getAttribute("username");
 
         try {
-            ResponseEntity<String> existRatingResponse = restTemplate.getForEntity(
-                    ratingUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
+            if (userId != null && session.getAttribute("loggedIn") != null) {
+                ResponseEntity<String> existRatingResponse = restTemplate.getForEntity(
+                        ratingUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
 
-            if (existRatingResponse.getStatusCode() == HttpStatus.OK) {
-                String responseBody = existRatingResponse.getBody();
-                if (responseBody != null && responseBody.equals("Can rating")) {
-                    model.addAttribute("ratingForm", true);
+                if (existRatingResponse.getStatusCode() == HttpStatus.OK) {
+                    String responseBody = existRatingResponse.getBody();
+                    if (responseBody != null && responseBody.equals("Can rating")) {
+                        model.addAttribute("ratingForm", true);
+                    }
+                } else if (existRatingResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                    model.addAttribute("ratingForm", false);
                 }
-            } else if (existRatingResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                model.addAttribute("ratingForm", false);
             }
         } catch (HttpClientErrorException e) {
             model.addAttribute("errorMessage", "An error occurred while processing your request.");
