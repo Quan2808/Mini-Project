@@ -45,8 +45,9 @@
       </tr>
     </table>
 
-    <div th:if="${ratingForm}">
+    <div>
       <form
+        th:if="${ratingForm}"
         th:action="@{/book/rate/{bookId}/{username}(bookId=${bookId}, username=${username})}"
         method="post"
       >
@@ -60,6 +61,31 @@
             th:text="${i + ' Star'}"
           ></option>
         </select>
+
+        <button type="submit">Submit Rating</button>
+      </form>
+    </div>
+
+    <div>
+      <form
+        th:if="${reviewForm}"
+        th:action="@{/book/review/{bookId}/{username}(bookId=${bookId}, username=${username})}"
+        method="post"
+      >
+        <input type="hidden" name="bookId" th:value="${bookId}" />
+        <input type="hidden" name="username" th:value="${username}" />
+        <label for="description">Review:</label>
+
+        <label for="description">Description:</label><br />
+
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          cols="50"
+          required
+        ></textarea
+        ><br />
 
         <button type="submit">Submit Rating</button>
       </form>

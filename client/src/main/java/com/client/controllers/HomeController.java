@@ -21,6 +21,8 @@ public class HomeController {
 
     private final String ratingUrl = "http://localhost:6789/api/ratings";
 
+    private final String reviewUrl = "http://localhost:6789/api/reviews";
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -95,22 +97,9 @@ public class HomeController {
         Object[] book = response.getBody();
         String userId = (String) session.getAttribute("username");
 
-        try {
-            if (userId != null && session.getAttribute("loggedIn") != null) {
-                ResponseEntity<String> existRatingResponse = restTemplate.getForEntity(
-                        ratingUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
-
-                if (existRatingResponse.getStatusCode() == HttpStatus.OK) {
-                    String responseBody = existRatingResponse.getBody();
-                    if (responseBody != null && responseBody.equals("Can rating")) {
-                        model.addAttribute("ratingForm", true);
-                    }
-                } else if (existRatingResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                    model.addAttribute("ratingForm", false);
-                }
-            }
-        } catch (HttpClientErrorException e) {
-            model.addAttribute("errorMessage", "An error occurred while processing your request.");
+        if (userId != null && session.getAttribute("loggedIn") != null) {
+            checkRatingPermission(bookId, userId, model);
+            checkReviewPermission(bookId, userId, model);
         }
 
         if (response.getStatusCode().is2xxSuccessful() && book.length > 0 && book != null) {
@@ -136,6 +125,42 @@ public class HomeController {
         }
     }
 
+    private void checkRatingPermission(UUID bookId, String userId, Model model) {
+        try {
+            ResponseEntity<String> existRatingResponse = restTemplate.getForEntity(
+                    ratingUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
+
+            if (existRatingResponse.getStatusCode() == HttpStatus.OK) {
+                String responseBody = existRatingResponse.getBody();
+                if (responseBody != null && responseBody.equals("Can rating")) {
+                    model.addAttribute("ratingForm", true);
+                }
+            } else if (existRatingResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                model.addAttribute("ratingForm", false);
+            }
+        } catch (HttpClientErrorException e) {
+            model.addAttribute("errorMessage", "An error occurred while processing your request.");
+        }
+    }
+
+    private void checkReviewPermission(UUID bookId, String userId, Model model) {
+        try {
+            ResponseEntity<String> existReviewResponse = restTemplate.getForEntity(
+                    reviewUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
+
+            if (existReviewResponse.getStatusCode() == HttpStatus.OK) {
+                String responseBody = existReviewResponse.getBody();
+                if (responseBody != null && responseBody.equals("Can review")) {
+                    model.addAttribute("reviewForm", true);
+                }
+            } else if (existReviewResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                model.addAttribute("reviewForm", false);
+            }
+        } catch (HttpClientErrorException e) {
+            model.addAttribute("errorMessage", "An error occurred while processing your request.");
+        }
+    }
+
     private double calculateAverageRating(List<Object[]> ratings) {
         if (ratings == null || ratings.isEmpty()) {
             return 0.0;
@@ -153,4 +178,5 @@ public class HomeController {
 
         return totalRatings > 0 ? (double) sumOfRatings / totalRatings : 0.0;
     }
+
 }

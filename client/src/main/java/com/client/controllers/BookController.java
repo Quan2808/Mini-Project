@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.client.dto.BookDto;
 import com.client.entities.Book;
 import com.client.entities.Rating;
+import com.client.entities.Review;
 import com.client.utils.FileUtil;
 
 import jakarta.servlet.http.HttpSession;
@@ -111,6 +112,21 @@ public class BookController {
             @ModelAttribute("rating") Rating rating, HttpSession session) {
 
         String saveRatingUrl = "http://localhost:6789/api/ratings/save/" + bookId + "/" + username;
+
+        ResponseEntity<String> response = restTemplate.postForEntity(saveRatingUrl, rating, String.class);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return "redirect:/" + bookId;
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    @PostMapping("/review/{bookId}/{username}")
+    public String saveReview(@PathVariable UUID bookId, @PathVariable String username,
+            @ModelAttribute("review") Review rating, HttpSession session) {
+
+        String saveRatingUrl = "http://localhost:6789/api/reviews/save/" + bookId + "/" + username;
 
         ResponseEntity<String> response = restTemplate.postForEntity(saveRatingUrl, rating, String.class);
 
