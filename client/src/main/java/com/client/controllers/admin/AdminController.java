@@ -17,6 +17,8 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/admin")
 public class AdminController {
 
+    private String bookUrl = "http://localhost:6789/api/books";
+
     private String userUrl = "http://localhost:6789/api/users/";
 
     @Autowired
@@ -57,6 +59,26 @@ public class AdminController {
         model.addAttribute("userList", userList);
 
         return "admin/account/index";
+    }
+
+    @GetMapping("/book")
+    public String getBooks(Model model, HttpSession session) {
+        String redirect = authenticate(session, "/");
+        if (redirect != null) {
+            return redirect;
+        }
+
+        ResponseEntity<List<Object[]>> response = restTemplate.exchange(
+                bookUrl + "/book-manager/" + session.getAttribute("username"),
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Object[]>>() {
+                });
+
+        List<Object[]> books = response.getBody();
+
+        model.addAttribute("bookList", books);
+        return "admin/book/index";
     }
 
 }

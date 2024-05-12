@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book List - Admin</title>
+  </head>
+  <body>
+    <div>
+      <a th:href="@{/admin}">Return Dashboard</a>
+
+      <h1>Your Book</h1>
+      <p><a th:href="@{/book/newbook}">New Book</a></p>
+
+      <table th:border="1">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Publish Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="i : ${bookList}">
+            <td th:text="${i[1]}"></td>
+            <td th:text="${i[4]}"></td>
+            <td>
+              <a th:href="@{/{bookId}(bookId=${i[0]})}" target="_blank"
+                >Detail</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

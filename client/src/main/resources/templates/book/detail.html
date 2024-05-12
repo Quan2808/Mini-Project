@@ -16,10 +16,7 @@
         <th>Description</th>
         <td th:text="${book[0][2]}">Book Description</td>
       </tr>
-      <tr>
-        <th>Publish Date</th>
-        <td th:text="${book[0][4]}">Publish Date</td>
-      </tr>
+
       <tr>
         <th>Author</th>
         <td th:text="${book[0][5]}">Author Name</td>
@@ -38,6 +35,10 @@
             <a th:href="@{/auth}">Login</a> to download
           </span>
         </td>
+      </tr>
+      <tr>
+        <th>Publish Date</th>
+        <td th:text="${book[0][4]}">Publish Date</td>
       </tr>
       <tr>
         <th>Rating</th>
