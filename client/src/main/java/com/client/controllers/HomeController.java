@@ -21,7 +21,7 @@ public class HomeController {
 
     private final String ratingUrl = "http://localhost:6789/api/ratings";
 
-    private final String reviewUrl = "http://localhost:6789/api/reviews";
+    private final String FeedbackUrl = "http://localhost:6789/api/feedbacks";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -87,14 +87,22 @@ public class HomeController {
         Object[] book = response.getBody();
         String userId = (String) session.getAttribute("username");
 
+        ResponseEntity<Object[]> FeedbackResponse = restTemplate.exchange(
+                FeedbackUrl + "/" + bookId, HttpMethod.GET, null, Object[].class);
+        Object[] Feedback = FeedbackResponse.getBody();
+
         if (userId != null && session.getAttribute("loggedIn") != null) {
             checkRatingPermission(bookId, userId, model);
-            checkReviewPermission(bookId, userId, model);
+            checkFeedbackPermission(bookId, userId, model);
         }
 
         if (response.getStatusCode().is2xxSuccessful() && book.length > 0 && book != null) {
             if (session.getAttribute("loggedIn") != null) {
                 model.addAttribute("loggedIn", true);
+            }
+
+            if (FeedbackResponse.getStatusCode().is2xxSuccessful()) {
+                model.addAttribute("Feedback", Feedback);
             }
 
             addAverageRatingAttribute(bookId, model);
@@ -137,18 +145,18 @@ public class HomeController {
         }
     }
 
-    private void checkReviewPermission(UUID bookId, String userId, Model model) {
+    private void checkFeedbackPermission(UUID bookId, String userId, Model model) {
         try {
-            ResponseEntity<String> existReviewResponse = restTemplate.getForEntity(
-                    reviewUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
+            ResponseEntity<String> existFeedbackResponse = restTemplate.getForEntity(
+                    FeedbackUrl + "/exist/{bookId}/{userId}", String.class, bookId, userId);
 
-            if (existReviewResponse.getStatusCode() == HttpStatus.OK) {
-                String responseBody = existReviewResponse.getBody();
-                if (responseBody != null && responseBody.equals("Can review")) {
-                    model.addAttribute("reviewForm", true);
+            if (existFeedbackResponse.getStatusCode() == HttpStatus.OK) {
+                String responseBody = existFeedbackResponse.getBody();
+                if (responseBody != null && responseBody.equals("Can Feedback")) {
+                    model.addAttribute("FeedbackForm", true);
                 }
-            } else if (existReviewResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                model.addAttribute("reviewForm", false);
+            } else if (existFeedbackResponse.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                model.addAttribute("FeedbackForm", false);
             }
         } catch (HttpClientErrorException e) {
             model.addAttribute("errorMessage", "An error occurred while processing your request.");

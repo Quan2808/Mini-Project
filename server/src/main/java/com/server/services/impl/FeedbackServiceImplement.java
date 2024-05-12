@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.server.entities.*;
 import com.server.repositories.*;
-import com.server.services.ReviewService;
+import com.server.services.FeedbackService;
 import com.server.utils.ResponseUtils;
 
 @Service
-public class ReviewServiceImplement implements ReviewService {
+public class FeedbackServiceImplement implements FeedbackService {
 
     @Autowired
-    ReviewRepository reviewRepo;
+    FeedbackRepository FeedbackRepo;
 
     @Autowired
     BookRepository bookRepo;
@@ -26,31 +26,31 @@ public class ReviewServiceImplement implements ReviewService {
     UserRepository userRepo;
 
     @Override
-    public ResponseEntity<String> existReview(UUID bookId, String username) {
+    public ResponseEntity<String> existFeedback(UUID bookId, String username) {
 
-        Object[] review = reviewRepo.getReview(bookId, getUserId(username));
-        if (review.length >= 1) {
-            return ResponseUtils.badRequest("Can not review.");
+        Object[] Feedback = FeedbackRepo.getFeedback(bookId, getUserId(username));
+        if (Feedback.length >= 1) {
+            return ResponseUtils.badRequest("Can not Feedback.");
         }
-        return ResponseUtils.ok("Can review");
+        return ResponseUtils.ok("Can Feedback");
 
     }
 
     @Override
-    public ResponseEntity<List<Object[]>> listReview(UUID id) {
-        List<Object[]> reviews = reviewRepo.getReviews(id);
-        return ResponseEntity.ok().body(reviews);
+    public ResponseEntity<List<Object[]>> listFeedback(UUID id) {
+        List<Object[]> Feedbacks = FeedbackRepo.getFeedbacks(id);
+        return ResponseEntity.ok().body(Feedbacks);
     }
 
     @Override
-    public ResponseEntity<String> saveReview(UUID bookId, String username, @RequestBody Review review) {
+    public ResponseEntity<String> saveFeedback(UUID bookId, String username, @RequestBody Feedback Feedback) {
         User user = userRepo.existsUsername(username);
         Book book = bookRepo.findById(bookId).get();
 
-        review.setBook(book);
-        review.setUser(user);
-        reviewRepo.save(review);
-        return ResponseUtils.ok("Review successfully.");
+        Feedback.setBook(book);
+        Feedback.setUser(user);
+        FeedbackRepo.save(Feedback);
+        return ResponseUtils.ok("Feedback successfully.");
     }
 
     public UUID getUserId(String username) {

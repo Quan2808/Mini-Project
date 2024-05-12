@@ -12,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 
-public class Review {
+public class Feedback {
 
     @Id
     @GeneratedValue(generator = "uuid-hibernate-generator")

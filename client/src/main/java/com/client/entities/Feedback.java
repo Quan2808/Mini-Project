@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Review {
+public class Feedback {
 
     private UUID id;
 

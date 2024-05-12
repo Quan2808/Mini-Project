@@ -44,7 +44,25 @@
         <td th:text="${averageRating}"></td>
       </tr>
     </table>
+
+    <h1>Feedback about this book</h1>
+    <table th:border="1">
+      <thead>
+        <tr>
+          <th>User name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="i : ${Feedback}">
+          <td th:text="${i[1]}"></td>
+          <td th:text="${i[0]}"></td>
+        </tr>
+      </tbody>
+    </table>
+
     <br />
+
     <div>
       <form
         th:if="${ratingForm}"
@@ -65,16 +83,17 @@
         <button type="submit">Submit Rating</button>
       </form>
     </div>
+
     <br />
     <div>
       <form
-        th:if="${reviewForm}"
-        th:action="@{/book/review/{bookId}/{username}(bookId=${bookId}, username=${username})}"
+        th:if="${FeedbackForm}"
+        th:action="@{/book/Feedback/{bookId}/{username}(bookId=${bookId}, username=${username})}"
         method="post"
       >
         <input type="hidden" name="bookId" th:value="${bookId}" />
         <input type="hidden" name="username" th:value="${username}" />
-        <label for="description">Review:</label>
+        <label for="description">Feedback:</label>
 
         <label for="description">Description:</label><br />
 
