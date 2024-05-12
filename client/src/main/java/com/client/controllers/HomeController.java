@@ -70,6 +70,9 @@ public class HomeController {
                     null,
                     new ParameterizedTypeReference<List<Object[]>>() {
                     });
+            List<Object[]> books = response.getBody();
+            model.addAttribute("bookList", books);
+            return "index";
         } else {
             response = restTemplate.exchange(
                     bookUrl,
@@ -77,11 +80,10 @@ public class HomeController {
                     null,
                     new ParameterizedTypeReference<List<Object[]>>() {
                     });
+            return "redirect:/";
+
         }
 
-        List<Object[]> books = response.getBody();
-        model.addAttribute("bookList", books);
-        return "index";
     }
 
     @GetMapping("/{bookId}")
