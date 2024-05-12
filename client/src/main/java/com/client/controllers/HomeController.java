@@ -30,15 +30,12 @@ public class HomeController {
         if (session.getAttribute("loggedIn") != null) {
             model.addAttribute("loggedIn", true);
             model.addAttribute("username", session.getAttribute("username"));
-
             if (session.getAttribute("Administrator") != null) {
                 model.addAttribute("Administrator", true);
             }
-
             if (session.getAttribute("Publisher") != null) {
                 model.addAttribute("Publisher", true);
             }
-
         } else {
             model.addAttribute("loggedIn", false);
         }
@@ -56,36 +53,29 @@ public class HomeController {
         List<Object[]> books = response.getBody();
 
         model.addAttribute("bookList", books);
-
         return "index";
     }
 
     @GetMapping("/search")
     public String getBooksByTitle(@RequestParam("title") String title, Model model, HttpSession session) {
         handleUserSession(model, session);
-
-        ResponseEntity<List<Object[]>> response;
         if (title != null && !title.isEmpty()) {
+            ResponseEntity<List<Object[]>> response;
+
             response = restTemplate.exchange(
                     bookUrl + "/search/" + title,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<List<Object[]>>() {
                     });
+
             List<Object[]> books = response.getBody();
+
             model.addAttribute("bookList", books);
             return "index";
-        } else {
-            response = restTemplate.exchange(
-                    bookUrl,
-                    HttpMethod.GET,
-                    null,
-                    new ParameterizedTypeReference<List<Object[]>>() {
-                    });
-            return "redirect:/";
-
         }
 
+        return "redirect:/";
     }
 
     @GetMapping("/{bookId}")
@@ -107,21 +97,25 @@ public class HomeController {
                 model.addAttribute("loggedIn", true);
             }
 
-            ResponseEntity<List<Object[]>> ratingsResponse = restTemplate.exchange(
-                    ratingUrl + "/" + bookId, HttpMethod.GET, null, new ParameterizedTypeReference<List<Object[]>>() {
-                    });
-
-            if (ratingsResponse.getStatusCode().is2xxSuccessful()) {
-                List<Object[]> ratings = ratingsResponse.getBody();
-                double resultAverageRating = calculateAverageRating(ratings);
-                String averageRating = String.format("%.1f", resultAverageRating);
-                model.addAttribute("averageRating", averageRating);
-            }
+            addAverageRatingAttribute(bookId, model);
 
             model.addAttribute("book", book);
             return "book/detail";
         } else {
             return "redirect:/book";
+        }
+    }
+
+    private void addAverageRatingAttribute(UUID bookId, Model model) {
+        ResponseEntity<List<Object[]>> ratingsResponse = restTemplate.exchange(
+                ratingUrl + "/" + bookId, HttpMethod.GET, null, new ParameterizedTypeReference<List<Object[]>>() {
+                });
+
+        if (ratingsResponse.getStatusCode().is2xxSuccessful()) {
+            List<Object[]> ratings = ratingsResponse.getBody();
+            double resultAverageRating = calculateAverageRating(ratings);
+            String averageRating = String.format("%.1f", resultAverageRating);
+            model.addAttribute("averageRating", averageRating);
         }
     }
 
