@@ -44,7 +44,7 @@
         <td th:text="${averageRating}"></td>
       </tr>
     </table>
-
+    <br />
     <div>
       <form
         th:if="${ratingForm}"
@@ -65,7 +65,7 @@
         <button type="submit">Submit Rating</button>
       </form>
     </div>
-
+    <br />
     <div>
       <form
         th:if="${reviewForm}"
@@ -90,7 +90,7 @@
         <button type="submit">Submit Rating</button>
       </form>
     </div>
-
+    <br />
     <a th:href="@{/}">Back to Book List</a>
   </body>
 </html>
