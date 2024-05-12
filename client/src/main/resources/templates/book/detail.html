@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -65,6 +65,30 @@
 
     <div>
       <form
+        th:if="${FeedbackForm}"
+        th:action="@{/book/feedback/{bookId}/{username}(bookId=${bookId}, username=${username})}"
+        method="post"
+      >
+        <input type="hidden" name="bookId" th:value="${bookId}" />
+        <input type="hidden" name="username" th:value="${username}" />
+        <label for="description">Feedback:</label>
+        <br />
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          cols="50"
+          required
+        ></textarea
+        ><br />
+
+        <button type="submit">Submit Rating</button>
+      </form>
+    </div>
+    <br />
+
+    <div>
+      <form
         th:if="${ratingForm}"
         th:action="@{/book/rate/{bookId}/{username}(bookId=${bookId}, username=${username})}"
         method="post"
@@ -84,31 +108,6 @@
       </form>
     </div>
 
-    <br />
-    <div>
-      <form
-        th:if="${FeedbackForm}"
-        th:action="@{/book/Feedback/{bookId}/{username}(bookId=${bookId}, username=${username})}"
-        method="post"
-      >
-        <input type="hidden" name="bookId" th:value="${bookId}" />
-        <input type="hidden" name="username" th:value="${username}" />
-        <label for="description">Feedback:</label>
-
-        <label for="description">Description:</label><br />
-
-        <textarea
-          id="description"
-          name="description"
-          rows="4"
-          cols="50"
-          required
-        ></textarea
-        ><br />
-
-        <button type="submit">Submit Rating</button>
-      </form>
-    </div>
     <br />
     <a th:href="@{/}">Back to Book List</a>
   </body>
